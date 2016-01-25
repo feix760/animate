@@ -3,12 +3,28 @@
  * @param {Object} opt
  * @param {Number} opt.width
  * @param {Number} opt.height
- * @param {Object} opt.elements
- * {
- *      range: [x1, y1, x2, y2],
- *      align: 'left|center|right',
- *      position: [x1, y1]
- * }
+ * @param {Array.<Object>} opt.elements
+ *
+ * element 结构:
+ * @param {String} element.type img|font 类型 
+ * @param {String|HTMLElement} element.source 
+ * @param {?Array.<Number>} element.relative 相对父区域子区域起点
+ * @param {?Array.<Number>} element.relativeSize 相对父区域子区域大小
+ * @param {?Number} element.top|left|bottom|right 位置控制
+ * @param {?Number} element.width|height 大小控制
+ * @param {?String} element.align|verticalAlign 对齐控制 'left|center|right|top|bottom'
+ *
+ * element img:
+ * @param {?Number} element.borderRadius 图片圆角
+ *      (合并之后锯齿现象严重, 可以考虑使用元素的继承`extend`)
+ *
+ * element font:
+ * @param {?Number} element.fontSize 
+ * @param {?String} element.fontFamily 
+ * @param {?String} element.color 
+ * @param {?Number} element.maxWidth 
+ *
+ * @return {Canvas} 
  */
 module.exports = function(opt) {
     var canvas = document.createElement('canvas');
@@ -163,3 +179,4 @@ function maxWidthText(ctx, text, max) {
         width: width
     };
 }
+

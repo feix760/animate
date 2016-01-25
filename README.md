@@ -51,6 +51,7 @@ var elements = [
     {
         source: 'http://cdn.qplus.com/huayang/mgift/99/img/0.png',
         cloneSource: true,
+        fixX: 300,
         xy: {
             259: [124, 397],
             269: [124, 612],
@@ -82,7 +83,10 @@ var controller = new Controller(
 播放动画:
 
 ```js
-controller.start();
+controller
+    .on('create', function() {
+        controller.start();
+    });
 ```
 
 查看某一帧:

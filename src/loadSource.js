@@ -1,6 +1,6 @@
 
 /**
- * 加载元素
+ * 加载资源文件
  * @param {Array.<String>} urls
  * @return {Promise.then(Object.<String,Image>)} 
  */

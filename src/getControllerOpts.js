@@ -1,29 +1,44 @@
 
 var _ = require('./utils');
 
+/**
+ * 适配选项
+ * @param {Object} opt
+ * @param {Object} fix 
+ * @return {Object} 
+ */
 module.exports = function(opt, fix) {
     opt = opt || {};
+
+    // default root
+    opt.root = document.querySelector('body');
+
     var elements = opt.elements = opt.elements || [];
 
+    // extend
     extend(elements);
 
     var scopes = getScopes(opt);
 
-    fixIndex(elements, -scopes.min);
+    // 帧偏移, 默认减去最小帧
+    fixIndex(elements, fix.fixIndex !== undefined ? fix.fixIndex : -scopes.min);
 
     fixXY(elements, fix);
 
-    scaleXY(elements, 0.5);
+    scaleXY(elements, fix.scaleXY !== undefined ? fix.scaleXY : 0.5);
 
-    fixOpacity(elements);
+    fix.fixOpacity !== false && fixOpacity(elements);
 
-    fixScale(elements);
+    fix.fixScale !== false && fixScale(elements);
 
     opt.duration = opt.duration || scopes.max - scopes.min;
 
     return opt;
 };
 
+/**
+ * 实现元素的继承
+ */
 function extend(elements) {
     var idMap = {};
 
@@ -43,6 +58,9 @@ function extend(elements) {
     });
 }
 
+/**
+ * 帧偏移
+ */
 function fixIndex(elements, fixIndex) {
     elements.forEach(function(ele) {
         ['xy', 'opacity', 'scale'].forEach(function(item) {
@@ -61,6 +79,9 @@ function fixIndex(elements, fixIndex) {
     });
 }
 
+/**
+ * x, y偏移
+ */
 function fixXY(elements, fix) {
     fix.fixX = fix.fixX || 0;
     fix.fixY = fix.fixY || 0;
@@ -88,6 +109,9 @@ function fixXY(elements, fix) {
     });
 }
 
+/**
+ * 640设计稿 -> 高清屏
+ */
 function scaleXY(elements, scale) {
     elements.forEach(function(ele) {
         if (_.isObject(ele.xy)) {
@@ -114,6 +138,9 @@ function scaleXY(elements, scale) {
     });
 }
 
+/**
+ * 100单位的opacity转化为1单位
+ */
 function fixOpacity(elements) {
     elements.forEach(function(ele) {
         if (_.isObject(ele.opacity)) {
@@ -126,6 +153,9 @@ function fixOpacity(elements) {
     });
 }
 
+/**
+ * 100单位的scale转化为1单位
+ */
 function fixScale(elements) {
     elements.forEach(function(ele) {
         if (_.isObject(ele.scale)) {
@@ -138,6 +168,9 @@ function fixScale(elements) {
     });
 }
 
+/**
+ * 获取所有元素最大最小帧
+ */
 function getScopes(opt) {
     var scopes = [];
     opt.elements.forEach(function(ele) {

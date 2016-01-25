@@ -1,14 +1,32 @@
 
 var _ = module.exports = {
+    /**
+     * @return {Boolean} 
+     */
     isFunction: function(fn) {
         return typeof fn === 'function';
     },
+
+    /**
+     * @return {Boolean} 
+     */
     isArray: function(obj) {
         return Object.prototype.toString.call(obj) === '[object Array]';
     },
+
+    /**
+     * @return {Boolean} 
+     */
     isObject: function(obj) {
         return obj && typeof obj === 'object' && !_.isArray(obj);
     },
+
+    /**
+     * extend
+     * @param {?Boolean} clone
+     * @param {Object} target 
+     * @param {...Object} args 
+     */
     extend: function(clone, target) {
         var args;
         if (clone === true) {
@@ -27,6 +45,10 @@ var _ = module.exports = {
         return target;
     },
 
+    /**
+     * clone object
+     * @param {Object} obj 
+     */
     clone: function(obj) {
         return JSON.parse(JSON.stringify(obj));
     },
@@ -46,6 +68,10 @@ var _ = module.exports = {
             });
     },
 
+    /**
+     * 列表去重
+     * @param {Array} array 
+     */
     uniq: function(array) {
         var used = {};
         return array.filter(function(item) {
@@ -53,6 +79,12 @@ var _ = module.exports = {
         });
     },
 
+    /**
+     * css
+     * @param {HTMLElement} ele
+     * @param {String|Object} styles 
+     * @param {String} value 
+     */
     css: function(ele, styles, value) {
         if (typeof styles === 'object') {
             _.extend(ele.style, styles || {});

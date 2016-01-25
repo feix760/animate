@@ -9,16 +9,26 @@ var EventEmitter = require('lib/EventEmitter'),
 /**
  * @class Controller
  * @param {Object} options 
- * @param {Number} options.duration 总帧数
- * @param {HTMLElement} options.root  
+ * @param {?Number} options.duration 总帧数 默认取元素的scope最大最小值做差
+ * @param {?HTMLElement} options.root  默认document.body
  * @param {Array.<Object>} options.elements 
- * @param {String|Image|Canvas|Array.<Object>} element.source 
- *      当为数组时使用mergeElements合并, 结构参考mergeElements
- * @param {String} element.type 'img' 
- * @param {Array.<Number>} element.range [2,34]
- * @param {Object.<String, Object|..>|Array.<Number>} element.xy
- * @param {Object|Number} element.opacity
- * @param {Object|Number} element.scale
+ *
+ * element 结构:
+ * @param {String|HTMLElement|Object} element.source 
+ *      当为Object时使用mergeElements合并, 结构参考mergeElements
+ * @param {Array.<Number>} element.scope [2,34] 起始/结束范围
+ * @param {?Object} element.style 附加的样式
+ * @param {?Object.<String, Object|..>|Array.<Number>} element.xy
+ * @param {?Object|Number} element.opacity
+ * @param {?Object|Number} element.scale
+ * @param {?String} element.id id标示
+ * @param {?String} element.extend 继承元素id
+ * @param {?Number} element.fixX x偏移
+ * @param {?Number} element.fixY y偏移
+ *
+ * @param {Object} fix
+ * @param {Number} fix.fixX 作用于所有元素的x偏移
+ * @param {Number} fix.fixY 作用于所有元素的y偏移
  */
 function Controller(options, fix) {
     options = getControllerOpts(options, fix);

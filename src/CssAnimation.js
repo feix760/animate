@@ -6,12 +6,8 @@ var EventEmitter = require('lib/EventEmitter'),
     config = require('./config');
 
 /**
- * 使用css3播放动画
- * {
- *      elements: [],
- *      duration: 40, // 总帧数
- *      root: document.body, // 容器
- * }
+ * @class CssAnimation
+ * @param {Object} options 
  */
 function CssAnimation(options) {
     options = options || {};
