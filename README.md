@@ -64,6 +64,19 @@ var elements = [
             280: 100,
             284: 0
         }
+    },
+    {
+        source: '<div>xxx</div>',
+        depSource: [
+            '//www.baidu.com/img/bd_logo1.png'
+        ],
+        style: {
+            opacity: 1
+        },
+        tick: function(index) {
+            console.log(this);
+            console.log(index);
+        }
     }
 ];
 
