@@ -179,6 +179,11 @@ p.toFrames = function() {
 
     points = _.uniq(_.sort(points));
 
+    // empty
+    if (!points.length) {
+        return null;
+    }
+
     var frames = {};
     function getCent(p) {
         return toFixed(p / self.options.duration * 100);

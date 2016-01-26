@@ -1,4 +1,12 @@
 
+
+// 适配requestAnimFrame
+window.requestAnimFrame = window.requestAnimationFrame 
+    || window.webkitRequestAnimationFrame 
+    || window.mozRequestAnimationFrame 
+    || window.oRequestAnimationFrame 
+    || window.msRequestAnimationFrame;
+
 var _ = module.exports = {
     /**
      * @return {Boolean} 
@@ -93,6 +101,17 @@ var _ = module.exports = {
         } else {
             // TODO
         }
+    },
+
+    /**
+     * 根据html创建元素
+     * @param {String} html
+     * @return {HTMLElement} 
+     */
+    create: function(html) {
+        var tmp = document.createElement('div');
+        tmp.innerHTML = (html || '').trim();
+        return tmp.childNodes[0] || null;
     }
 };
 

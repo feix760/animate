@@ -1,10 +1,21 @@
 
 var EventEmitter = require('lib/EventEmitter'),
     _ = require('./utils'),
+    config = require('./config'),
     loadSource = require('./loadSource'),
     CssAnimation = require('./CssAnimation'),
     mergeElements = require('./mergeElements'),
     getControllerOpts = require('./getControllerOpts');
+
+/**
+ * @type {Object} 状态值
+ */
+var STATUS = {
+    INIT: 1,
+    CREATE: 2,
+    START: 4,
+    FINISH: 8
+};
 
 /**
  * @class Controller
@@ -34,6 +45,8 @@ function Controller(options, fix) {
     options = getControllerOpts(options, fix);
     this.options = options;
     this.elements = options.elements;
+    // set status
+    this.status = STATUS.INIT;
     this.loadSource();
     this.once('sourcemerge', this.create.bind(this));
     if (options.autoStart) {
@@ -62,12 +75,18 @@ p._getAllUrlSource = function() {
     this._getRecursiveElements().forEach(function(item) {
         isUrlSource(item.source) 
             && (urls[item.source] = true);
+        // 依赖资源
+        if (item.depSource) {
+            item.depSource.forEach(function(url) {
+                urls[url] = true;
+            });
+        }
     });
     return Object.keys(urls);
 };
 
 function isUrlSource(source) {
-    return typeof source === 'string';
+    return typeof source === 'string' && source.indexOf('<') !== 0;
 }
 
 p._getRecursiveElements = function() {
@@ -87,9 +106,14 @@ function isMergeSource(source) {
 
 p.setSource = function(sourceMap) {
     this._getRecursiveElements().forEach(function(item) {
-        // TODO clone source
-        isUrlSource(item.source) 
-            && (item.source = sourceMap[item.source]);
+        if (typeof item.source === 'string') {
+            if (item.source.indexOf('<') === 0) {
+                // 创建html元素
+                item.source = _.create(item.source);
+            } else if (isUrlSource(item.source)) {
+                item.source = sourceMap[item.source];
+            }
+        }
         // clone source
         if (item.cloneSource) {
             item.source = cloneSource(item.source);
@@ -121,17 +145,33 @@ p.create = function() {
     self.drawer = new CssAnimation(_.extend({}, self.options, {
         elements: self.elements
     }));
-    // dispatch drawer event
-    ['start', 'finish'].forEach(function(event) {
-        self.drawer.on(event, function() {
-            self.emit(event);
+    self.drawer
+        .on('start', function() {
+            self.emit('start');
+        })
+        .on('finish', function() {
+            self.status = STATUS.FINISH;
+            self.emit('finish');
         });
-    });
+    this.status = STATUS.CREATE;
     self.emit('create');
 };
 
 p.start = function() {
+    this._startT = Date.now();
     this.drawer.start();
+    this.status = STATUS.START;
+    this.tick();
+};
+
+p.tick = function() {
+    if (this.status === STATUS.START) {
+        var index = (Date.now() - this._startT) / config.frameInterval;
+        this.elements.forEach(function(item) {
+            item.tick && item.tick(index);
+        });
+        requestAnimFrame(this.tick.bind(this));
+    }
 };
 
 /**

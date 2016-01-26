@@ -40,10 +40,13 @@ p.addElement = function(conf) {
         duration: this.duration
     }, conf));
     element.dom = getDom(conf);
-    setTransition(element.dom, {
-        duration: this.durationTime,
-        frames: element.toFrames()
-    });
+    var frames = element.toFrames();
+    if (frames) {
+        setTransition(element.dom, {
+            duration: this.durationTime,
+            frames: element.toFrames()
+        });
+    }
     this.elements.push(element);
 };
 
